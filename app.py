@@ -19,6 +19,22 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+with app.app_context():
+    db.create_all()
+    
+    # Create super admin if doesn't exist
+    if not User.query.filter_by(role='super_admin').first():
+        super_admin = User(
+            username='superadmin',
+            email='admin@school.com',
+            role='super_admin',
+            is_active=True
+        )
+        super_admin.set_password('admin123')
+        db.session.add(super_admin)
+        db.session.commit()
+        print("[v0] Super admin created successfully!")
+
 # ============ ROLE-BASED ACCESS CONTROL DECORATOR ============
 
 def role_required(role):
@@ -189,28 +205,6 @@ def logout():
 @login_required
 def dashboard():
     return render_template('dashboard.html', user=current_user)
-
-# ============ DATABASE INITIALIZATION ============
-
-@app.route('/init-db', methods=['POST'])
-def init_db():
-    """Initialize database with tables and create super admin"""
-    db.create_all()
-    
-    # Create super admin if doesn't exist
-    if not User.query.filter_by(role='super_admin').first():
-        super_admin = User(
-            username='superadmin',
-            email='admin@school.com',
-            role='super_admin',
-            is_active=True
-        )
-        super_admin.set_password('admin123')
-        db.session.add(super_admin)
-        db.session.commit()
-        return jsonify({'message': 'Database initialized and super admin created'}), 201
-    
-    return jsonify({'message': 'Database already initialized'}), 200
 
 # ============ SUPER ADMIN ROUTES ============
 
