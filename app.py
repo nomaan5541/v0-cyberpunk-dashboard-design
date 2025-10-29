@@ -8,11 +8,12 @@ from functools import wraps
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/school_management.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Create database directory if it doesn't exist
-os.makedirs('database', exist_ok=True)
+db_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database')
+os.makedirs(db_dir, exist_ok=True)
+db_path = os.path.join(db_dir, 'school_management.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
