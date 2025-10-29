@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}School Admin Dashboard - NEXUS{% endblock %}
+{% block page_title %}SCHOOL OPERATIONS{% endblock %}
+
+{% block content %}
+<div class="kpi-cards">
+    <div class="kpi-card">
+        <div class="kpi-icon" style="color: var(--primary-color);">
+            <i class="fas fa-user-graduate"></i>
+        </div>
+        <div class="kpi-content">
+            <h3>Total Students</h3>
+            <div class="kpi-value">{{ stats.total_students }}</div>
+        </div>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="kpi-icon" style="color: var(--accent-color);">
+            <i class="fas fa-chalkboard-user"></i>
+        </div>
+        <div class="kpi-content">
+            <h3>Total Teachers</h3>
+            <div class="kpi-value">{{ stats.total_teachers }}</div>
+        </div>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="kpi-icon" style="color: var(--secondary-color);">
+            <i class="fas fa-layer-group"></i>
+        </div>
+        <div class="kpi-content">
+            <h3>Total Classes</h3>
+            <div class="kpi-value">{{ stats.total_classes }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="recent-activities">
+    <h2 style="color: var(--primary-color); margin-bottom: 20px;">RECENT STUDENTS</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>NAME</th>
+                <th>ROLL NUMBER</th>
+                <th>CLASS</th>
+                <th>EMAIL</th>
+                <th>JOINED</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in recent_students %}
+            <tr>
+                <td>{{ student.user_id }}</td>
+                <td>{{ student.roll_number }}</td>
+                <td>{{ student.class_name }}</td>
+                <td>{{ student.date_of_birth }}</td>
+                <td>{{ student.created_at.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-secondary);">No students yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="recent-activities" style="margin-top: 30px;">
+    <h2 style="color: var(--primary-color); margin-bottom: 20px;">RECENT TEACHERS</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>NAME</th>
+                <th>SUBJECT</th>
+                <th>QUALIFICATION</th>
+                <th>JOINED</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for teacher in recent_teachers %}
+            <tr>
+                <td>{{ teacher.user_id }}</td>
+                <td>{{ teacher.subject }}</td>
+                <td>{{ teacher.qualification }}</td>
+                <td>{{ teacher.created_at.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align: center; color: var(--text-secondary);">No teachers yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

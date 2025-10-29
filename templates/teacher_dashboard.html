@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard - NEXUS{% endblock %}
+{% block page_title %}TEACHING COMMAND CENTER{% endblock %}
+
+{% block content %}
+<div class="kpi-cards">
+    <div class="kpi-card">
+        <div class="kpi-icon" style="color: var(--primary-color);">
+            <i class="fas fa-tasks"></i>
+        </div>
+        <div class="kpi-content">
+            <h3>Total Assignments</h3>
+            <div class="kpi-value">{{ stats.total_assignments }}</div>
+        </div>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="kpi-icon" style="color: var(--accent-color);">
+            <i class="fas fa-layer-group"></i>
+        </div>
+        <div class="kpi-content">
+            <h3>Classes</h3>
+            <div class="kpi-value">{{ stats.total_classes }}</div>
+        </div>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="kpi-icon" style="color: var(--warning);">
+            <i class="fas fa-hourglass-end"></i>
+        </div>
+        <div class="kpi-content">
+            <h3>Pending Submissions</h3>
+            <div class="kpi-value">{{ stats.pending_submissions }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="recent-activities">
+    <h2 style="color: var(--primary-color); margin-bottom: 20px;">RECENT ASSIGNMENTS</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>TITLE</th>
+                <th>CLASS</th>
+                <th>DUE DATE</th>
+                <th>CREATED</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in recent_assignments %}
+            <tr>
+                <td>{{ assignment.title }}</td>
+                <td>{{ assignment.class_name }}</td>
+                <td>{{ assignment.due_date }}</td>
+                <td>{{ assignment.created_at.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align: center; color: var(--text-secondary);">No assignments yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

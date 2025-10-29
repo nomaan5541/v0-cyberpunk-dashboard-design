@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Setup Wizard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .wizard-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+        
+        .wizard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .wizard-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .wizard-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .progress-bar {
+            display: flex;
+            background: #f0f0f0;
+        }
+        
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: #ddd;
+            transition: background 0.3s;
+        }
+        
+        .progress-step.active {
+            background: #667eea;
+        }
+        
+        .progress-step.completed {
+            background: #27ae60;
+        }
+        
+        .wizard-content {
+            padding: 40px;
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .step h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .step p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .input-group input {
+            flex: 1;
+        }
+        
+        .btn-add {
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-add:hover {
+            background: #5568d3;
+        }
+        
+        .btn-remove {
+            padding: 12px 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .wizard-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-prev {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-prev:hover {
+            background: #d0d0d0;
+        }
+        
+        .btn-next, .btn-finish {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-next:hover, .btn-finish:hover {
+            background: #5568d3;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .item-list {
+            background: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .item:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="wizard-container">
+        <div class="wizard-header">
+            <h1>School Setup Wizard</h1>
+            <p>Complete these steps to set up your school</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-step active" id="progress-1"></div>
+            <div class="progress-step" id="progress-2"></div>
+            <div class="progress-step" id="progress-3"></div>
+        </div>
+        
+        <div class="wizard-content">
+            <!-- Step 1: Basic Information -->
+            <div class="step active" id="step-1">
+                <h2>Step 1: School Information</h2>
+                <p>Let's start with your school's basic information</p>
+                <form id="step1Form">
+                    <div class="form-group">
+                        <label for="name">School Name *</label>
+                        <input type="text" id="name" name="name" value="{{ school.name or '' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" value="{{ school.address or '' }}">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" id="phone" name="phone" value="{{ school.phone or '' }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" value="{{ school.email or '' }}">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Step 2: Classes/Sections -->
+            <div class="step" id="step-2">
+                <h2>Step 2: Add Classes</h2>
+                <p>Add the classes/sections in your school</p>
+                <form id="step2Form">
+                    <div class="input-group">
+                        <input type="text" id="classInput" placeholder="e.g., Class 1A, Class 10B">
+                        <button type="button" class="btn-add" onclick="addClass()">Add Class</button>
+                    </div>
+                    <div class="item-list" id="classList">
+                        <p style="color: #999; text-align: center;">No classes added yet</p>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Step 3: Invite Teachers -->
+            <div class="step" id="step-3">
+                <h2>Step 3: Invite Teachers</h2>
+                <p>Add teacher email addresses to invite them to your school</p>
+                <form id="step3Form">
+                    <div class="input-group">
+                        <input type="email" id="teacherInput" placeholder="teacher@example.com">
+                        <button type="button" class="btn-add" onclick="addTeacher()">Add Teacher</button>
+                    </div>
+                    <div class="item-list" id="teacherList">
+                        <p style="color: #999; text-align: center;">No teachers added yet</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="wizard-footer">
+            <button class="btn btn-prev" id="prevBtn" onclick="previousStep()" style="display: none;">Previous</button>
+            <button class="btn btn-next" id="nextBtn" onclick="nextStep()">Next</button>
+            <button class="btn btn-finish" id="finishBtn" onclick="finishSetup()" style="display: none;">Finish</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+        let classes = [];
+        let teachers = [];
+        
+        function updateProgress() {
+            for (let i = 1; i <= totalSteps; i++) {
+                const progressStep = document.getElementById(`progress-${i}`);
+                if (i < currentStep) {
+                    progressStep.classList.add('completed');
+                    progressStep.classList.remove('active');
+                } else if (i === currentStep) {
+                    progressStep.classList.add('active');
+                    progressStep.classList.remove('completed');
+                } else {
+                    progressStep.classList.remove('active', 'completed');
+                }
+            }
+            
+            document.getElementById('prevBtn').style.display = currentStep > 1 ? 'block' : 'none';
+            document.getElementById('nextBtn').style.display = currentStep < totalSteps ? 'block' : 'none';
+            document.getElementById('finishBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
+        }
+        
+        function showStep(step) {
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById(`step-${i}`).classList.remove('active');
+            }
+            document.getElementById(`step-${step}`).classList.add('active');
+            updateProgress();
+        }
+        
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+        
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+        
+        function addClass() {
+            const input = document.getElementById('classInput');
+            const className = input.value.trim();
+            
+            if (className) {
+                classes.push(className);
+                input.value = '';
+                renderClasses();
+            }
+        }
+        
+        function renderClasses() {
+            const classList = document.getElementById('classList');
+            if (classes.length === 0) {
+                classList.innerHTML = '<p style="color: #999; text-align: center;">No classes added yet</p>';
+            } else {
+                classList.innerHTML = classes.map((cls, idx) => `
+                    <div class="item">
+                        <span>${cls}</span>
+                        <button type="button" class="btn-remove" onclick="removeClass(${idx})">Remove</button>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function removeClass(idx) {
+            classes.splice(idx, 1);
+            renderClasses();
+        }
+        
+        function addTeacher() {
+            const input = document.getElementById('teacherInput');
+            const email = input.value.trim();
+            
+            if (email && email.includes('@')) {
+                teachers.push(email);
+                input.value = '';
+                renderTeachers();
+            }
+        }
+        
+        function renderTeachers() {
+            const teacherList = document.getElementById('teacherList');
+            if (teachers.length === 0) {
+                teacherList.innerHTML = '<p style="color: #999; text-align: center;">No teachers added yet</p>';
+            } else {
+                teacherList.innerHTML = teachers.map((teacher, idx) => `
+                    <div class="item">
+                        <span>${teacher}</span>
+                        <button type="button" class="btn-remove" onclick="removeTeacher(${idx})">Remove</button>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function removeTeacher(idx) {
+            teachers.splice(idx, 1);
+            renderTeachers();
+        }
+        
+        async function finishSetup() {
+            const formData = new FormData();
+            formData.append('step', '1');
+            formData.append('name', document.getElementById('name').value);
+            formData.append('address', document.getElementById('address').value);
+            formData.append('phone', document.getElementById('phone').value);
+            formData.append('email', document.getElementById('email').value);
+            
+            try {
+                const response = await fetch('{{ url_for("school_admin_setup") }}', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    alert('Setup completed successfully!');
+                    window.location.href = '{{ url_for("school_admin_dashboard") }}';
+                }
+            } catch (error) {
+                alert('Error completing setup: ' + error.message);
+            }
+        }
+        
+        updateProgress();
+    </script>
+</body>
+</html>

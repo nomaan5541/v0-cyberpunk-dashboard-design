@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS - School Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <div class="neon-text">
+                        <i class="fas fa-shield-alt"></i> NEXUS
+                    </div>
+                    <div class="subtitle">TACTICAL COMMAND INTERFACE</div>
+                </div>
+                
+                <form method="POST" class="login-form">
+                    <div class="form-group">
+                        <label for="username">USERNAME</label>
+                        <input type="text" id="username" name="username" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">PASSWORD</label>
+                        <input type="password" id="password" name="password" class="form-input" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">AUTHENTICATE</button>
+                </form>
+                
+                <div class="error-message" id="errorMsg"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check for error messages
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            document.getElementById('errorMsg').textContent = 'Invalid credentials';
+            document.getElementById('errorMsg').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
