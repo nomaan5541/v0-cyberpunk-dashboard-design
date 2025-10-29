@@ -4,16 +4,32 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import os
+from functools import wraps
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///school_management.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/school_management.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Create database directory if it doesn't exist
+os.makedirs('database', exist_ok=True)
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+# ============ ROLE-BASED ACCESS CONTROL DECORATOR ============
+
+def role_required(role):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated or current_user.role != role:
+                return redirect(url_for('login'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 # ============ DATABASE MODELS ============
 
@@ -1359,20 +1375,6 @@ def teacher_summary_report():
     }
     
     return render_template('teacher_summary_report.html', summary=summary)
-
-# ============ ROLE-BASED ACCESS CONTROL DECORATOR ============
-
-from functools import wraps
-
-def role_required(role):
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            if not current_user.is_authenticated or current_user.role != role:
-                return redirect(url_for('login'))
-            return f(*args, **kwargs)
-        return decorated_function
-    return decorator
 
 if __name__ == '__main__':
     app.run(debug=True)
