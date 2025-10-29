@@ -3,195 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Attendance</title>
+    <title>NEXUS - Attendance Designation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #00ffc8;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
         }
-        
+
         .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: rgba(15, 20, 40, 0.95);
+            border-bottom: 2px solid #ff6600;
             padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.2);
         }
-        
+
+        .navbar h1 {
+            color: #ff6600;
+            text-shadow: 0 0 10px #ff6600;
+            font-size: 24px;
+            letter-spacing: 2px;
+        }
+
         .navbar a {
-            color: white;
+            color: #00ffc8;
             text-decoration: none;
             padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
+            border: 1px solid #00ffc8;
+            background: rgba(0, 255, 200, 0.05);
+            border-radius: 0;
+            margin-left: 10px;
+            transition: all 0.3s;
+            font-size: 11px;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(0, 255, 200, 0.1);
         }
-        
+
+        .navbar a:hover {
+            background: rgba(0, 255, 200, 0.15);
+            box-shadow: 0 0 15px rgba(0, 255, 200, 0.3);
+        }
+
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 40px auto;
             padding: 0 20px;
         }
-        
+
         .section {
-            background: white;
+            background: rgba(15, 20, 40, 0.9);
+            border: 1px solid #00ffc8;
+            border-radius: 0;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(0, 255, 200, 0.1), inset 0 0 20px rgba(0, 255, 200, 0.02);
         }
-        
+
         .section h2 {
-            color: #333;
+            color: #ff6600;
             margin-bottom: 20px;
+            font-size: 18px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #ff6600;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
+            color: #00ffc8;
+            font-weight: bold;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px #00ffc8;
         }
-        
+
         input, select {
             padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
+            border: 1px solid #00ffc8;
+            background: rgba(0, 255, 200, 0.05);
+            color: #00ffc8;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            border-radius: 0;
+            box-shadow: inset 0 0 10px rgba(0, 255, 200, 0.05);
+            transition: all 0.3s;
             width: 100%;
         }
-        
+
         input:focus, select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #ff6600;
+            box-shadow: 
+                inset 0 0 10px rgba(0, 255, 200, 0.05),
+                0 0 15px rgba(255, 102, 0, 0.3);
+            color: #ff6600;
         }
-        
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-        
+
         .btn {
             padding: 12px 24px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%);
+            color: #0a0e27;
+            border: 1px solid #ff6600;
+            border-radius: 0;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background 0.3s;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.3);
+            text-transform: uppercase;
         }
-        
+
         .btn:hover {
-            background: #5568d3;
+            box-shadow: 0 0 25px rgba(255, 102, 0, 0.6);
+            transform: translateY(-2px);
         }
-        
+
         .attendance-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-        
+
         .attendance-table th {
-            background: #f9f9f9;
+            background: rgba(255, 102, 0, 0.1);
             padding: 15px;
             text-align: left;
-            color: #333;
-            font-weight: 600;
-            border-bottom: 2px solid #ddd;
+            color: #ff6600;
+            font-weight: bold;
+            border-bottom: 2px solid #ff6600;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px #ff6600;
         }
-        
+
         .attendance-table td {
             padding: 15px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #00ffc8;
+            color: #00ffc8;
+            font-size: 12px;
         }
-        
+
         .attendance-table tr:hover {
-            background: #f9f9f9;
+            background: rgba(0, 255, 200, 0.05);
         }
-        
+
         .status-select {
             padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
+            border: 1px solid #00ffc8;
+            background: rgba(0, 255, 200, 0.05);
+            color: #00ffc8;
+            border-radius: 0;
+            font-family: 'Courier New', monospace;
         }
-        
+
         .message {
             padding: 15px;
-            border-radius: 5px;
+            border-radius: 0;
             margin-bottom: 20px;
             display: none;
+            font-size: 12px;
+            border: 1px solid;
         }
-        
+
         .message.success {
-            background: #d4edda;
-            color: #155724;
-            display: block;
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
         }
-        
+
         .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            display: block;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .action-buttons a {
-            display: inline-block;
-            padding: 8px 16px;
-            background: #95a5a6;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        
-        .action-buttons a:hover {
-            background: #7f8c8d;
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff6666;
+            border-color: #ff0000;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
         }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <h1>Manage Attendance</h1>
+        <h1><i class="fas fa-clipboard-check"></i> ATTENDANCE DESIGNATION SYSTEM</h1>
         <div>
-            <a href="{{ url_for('attendance_report') }}">View Report</a>
-            <a href="{{ url_for('school_admin_dashboard') }}">Back to Dashboard</a>
+            <a href="{{ url_for('attendance_report') }}">VIEW REPORT</a>
+            <a href="{{ url_for('school_admin_dashboard') }}">← RETURN</a>
         </div>
     </div>
     
     <div class="container">
         <div class="section">
-            <h2>Record Attendance</h2>
+            <h2>▌ ATTENDANCE RECORDING PROTOCOL</h2>
             <div id="message" class="message"></div>
             
             <form id="attendanceForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="date">Date *</label>
+                        <label for="date">OPERATION DATE *</label>
                         <input type="date" id="date" name="date" required>
                     </div>
                     <div class="form-group">
-                        <label for="class_name">Class *</label>
+                        <label for="class_name">UNIT DESIGNATION *</label>
                         <select id="class_name" name="class_name" required onchange="loadClassStudents()">
-                            <option value="">Select Class</option>
+                            <option value="">SELECT UNIT</option>
                             {% for class_name in classes %}
                             <option value="{{ class_name }}">{{ class_name }}</option>
                             {% endfor %}
@@ -203,15 +239,15 @@
                     <table class="attendance-table">
                         <thead>
                             <tr>
-                                <th>Roll Number</th>
-                                <th>Student Name</th>
-                                <th>Status</th>
+                                <th>DESIGNATION CODE</th>
+                                <th>OPERATIVE NAME</th>
+                                <th>STATUS DESIGNATION</th>
                             </tr>
                         </thead>
                         <tbody id="studentsList">
                         </tbody>
                     </table>
-                    <button type="submit" class="btn" style="margin-top: 20px;">Save Attendance</button>
+                    <button type="submit" class="btn" style="margin-top: 20px;">COMMIT ATTENDANCE DATA</button>
                 </div>
             </form>
         </div>
@@ -222,15 +258,12 @@
             const messageDiv = document.getElementById('message');
             messageDiv.textContent = message;
             messageDiv.className = `message ${type}`;
-            setTimeout(() => {
-                messageDiv.className = 'message';
-            }, 5000);
+            setTimeout(() => { messageDiv.className = 'message'; }, 5000);
         }
         
         function loadClassStudents() {
             const className = document.getElementById('class_name').value;
             const date = document.getElementById('date').value;
-            
             if (!className || !date) return;
             
             fetch(`/school-admin/attendance/class/${className}/${date}`)
@@ -238,24 +271,22 @@
                 .then(data => {
                     const studentsList = document.getElementById('studentsList');
                     studentsList.innerHTML = '';
-                    
-                    data.forEach((student, idx) => {
+                    data.forEach((student) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${student.roll_number}</td>
                             <td>${student.name}</td>
                             <td>
                                 <select class="status-select" name="attendance[]">
-                                    <option value="present" ${student.status === 'present' ? 'selected' : ''}>Present</option>
-                                    <option value="absent" ${student.status === 'absent' ? 'selected' : ''}>Absent</option>
-                                    <option value="late" ${student.status === 'late' ? 'selected' : ''}>Late</option>
-                                    <option value="excused" ${student.status === 'excused' ? 'selected' : ''}>Excused</option>
+                                    <option value="present" ${student.status === 'present' ? 'selected' : ''}>PRESENT</option>
+                                    <option value="absent" ${student.status === 'absent' ? 'selected' : ''}>ABSENT</option>
+                                    <option value="late" ${student.status === 'late' ? 'selected' : ''}>LATE</option>
+                                    <option value="excused" ${student.status === 'excused' ? 'selected' : ''}>EXCUSED</option>
                                 </select>
                             </td>
                         `;
                         studentsList.appendChild(row);
                     });
-                    
                     document.getElementById('studentsContainer').style.display = 'block';
                 });
         }
@@ -263,26 +294,20 @@
         document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
-            
             try {
-                const response = await fetch('{{ url_for("manage_attendance") }}', {
-                    method: 'POST',
-                    body: formData
-                });
+                const response = await fetch('{{ url_for("manage_attendance") }}', { method: 'POST', body: formData });
                 const data = await response.json();
-                
                 if (response.ok) {
                     showMessage(data.message, 'success');
                     setTimeout(() => location.reload(), 1500);
                 } else {
-                    showMessage('Error: ' + data.error, 'error');
+                    showMessage('ERROR: ' + data.error, 'error');
                 }
             } catch (error) {
-                showMessage('Error: ' + error.message, 'error');
+                showMessage('ERROR: ' + error.message, 'error');
             }
         });
         
-        // Set today's date as default
         document.getElementById('date').valueAsDate = new Date();
     </script>
 </body>
