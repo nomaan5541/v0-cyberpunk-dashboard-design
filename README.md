@@ -23,6 +23,9 @@ Continue building your app on:
 **[https://v0.app/chat/projects/YeurMg2Imx8](https://v0.app/chat/projects/YeurMg2Imx8)**
 
 ## How It Works
+**Username:** superadmin
+**Password:** admin123
+**Role:** Super Admin
 
 1. Create and modify your project using [v0.app](https://v0.app)
 2. Deploy your chats from the v0 interface
