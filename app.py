@@ -121,6 +121,19 @@ class AssignmentSubmission(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+@app.route('/')
+def home():
+    if current_user.is_authenticated:
+        if current_user.role == 'super_admin':
+            return redirect(url_for('super_admin_dashboard'))
+        elif current_user.role == 'school_admin':
+            return redirect(url_for('school_admin_dashboard'))
+        elif current_user.role == 'teacher':
+            return redirect(url_for('teacher_dashboard'))
+        else:
+            return redirect(url_for('dashboard'))
+    return redirect(url_for('login'))
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
