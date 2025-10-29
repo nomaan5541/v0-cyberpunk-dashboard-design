@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 
 {% block title %}Teacher Dashboard - NEXUS{% endblock %}
-{% block page_title %}TEACHING COMMAND CENTER{% endblock %}
+{% block page_title %}TEACHING COMMAND CENTER / OVERVIEW{% endblock %}
 
 {% block content %}
+<!-- Enhanced KPI cards with tactical styling -->
 <div class="kpi-cards">
     <div class="kpi-card">
         <div class="kpi-icon" style="color: var(--primary-color);">
             <i class="fas fa-tasks"></i>
         </div>
         <div class="kpi-content">
-            <h3>Total Assignments</h3>
+            <h3>ACTIVE ASSIGNMENTS</h3>
             <div class="kpi-value">{{ stats.total_assignments }}</div>
+            <div class="kpi-status">Deployment: ACTIVE</div>
         </div>
     </div>
     
@@ -20,8 +22,9 @@
             <i class="fas fa-layer-group"></i>
         </div>
         <div class="kpi-content">
-            <h3>Classes</h3>
+            <h3>CLASS ROSTER</h3>
             <div class="kpi-value">{{ stats.total_classes }}</div>
+            <div class="kpi-status">Organization: OPTIMAL</div>
         </div>
     </div>
     
@@ -30,34 +33,36 @@
             <i class="fas fa-hourglass-end"></i>
         </div>
         <div class="kpi-content">
-            <h3>Pending Submissions</h3>
+            <h3>PENDING SUBMISSIONS</h3>
             <div class="kpi-value">{{ stats.pending_submissions }}</div>
+            <div class="kpi-status">Review: REQUIRED</div>
         </div>
     </div>
 </div>
 
+<!-- Enhanced activity log with tactical styling -->
 <div class="recent-activities">
-    <h2 style="color: var(--primary-color); margin-bottom: 20px;">RECENT ASSIGNMENTS</h2>
+    <h2 style="color: var(--primary-color); margin-bottom: 20px;">ASSIGNMENT DEPLOYMENT LOG</h2>
     <table class="data-table">
         <thead>
             <tr>
-                <th>TITLE</th>
-                <th>CLASS</th>
-                <th>DUE DATE</th>
-                <th>CREATED</th>
+                <th>ASSIGNMENT DESIGNATION</th>
+                <th>TARGET CLASS</th>
+                <th>DEADLINE</th>
+                <th>DEPLOYMENT DATE</th>
             </tr>
         </thead>
         <tbody>
             {% for assignment in recent_assignments %}
             <tr>
-                <td>{{ assignment.title }}</td>
+                <td><strong>{{ assignment.title }}</strong></td>
                 <td>{{ assignment.class_name }}</td>
-                <td>{{ assignment.due_date }}</td>
-                <td>{{ assignment.created_at.strftime('%Y-%m-%d') }}</td>
+                <td><span style="color: var(--warning);">{{ assignment.due_date }}</span></td>
+                <td><span style="color: var(--primary-color);">{{ assignment.created_at.strftime('%Y-%m-%d') }}</span></td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="4" style="text-align: center; color: var(--text-secondary);">No assignments yet</td>
+                <td colspan="4" style="text-align: center; color: var(--text-secondary);">NO ASSIGNMENTS DEPLOYED</td>
             </tr>
             {% endfor %}
         </tbody>
