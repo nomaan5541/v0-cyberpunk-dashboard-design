@@ -4,16 +4,33 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import os
+from functools import wraps
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///school_management.db'
+
+db_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database')
+os.makedirs(db_dir, exist_ok=True)
+db_path = os.path.join(db_dir, 'school_management.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+# ============ ROLE-BASED ACCESS CONTROL DECORATOR ============
+
+def role_required(role):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated or current_user.role != role:
+                return redirect(url_for('login'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 # ============ DATABASE MODELS ============
 
@@ -99,11 +116,41 @@ class AssignmentSubmission(db.Model):
     feedback = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+# Initialize the database and create super admin user
+with app.app_context():
+    db.create_all()
+    
+    # Create super admin if doesn't exist
+    if not User.query.filter_by(role='super_admin').first():
+        super_admin = User(
+            username='superadmin',
+            email='admin@school.com',
+            role='super_admin',
+            is_active=True
+        )
+        super_admin.set_password('admin123')
+        db.session.add(super_admin)
+        db.session.commit()
+        print("[v0] Super admin created successfully!")
+
 # ============ AUTHENTICATION ROUTES ============
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@app.route('/')
+def home():
+    if current_user.is_authenticated:
+        if current_user.role == 'super_admin':
+            return redirect(url_for('super_admin_dashboard'))
+        elif current_user.role == 'school_admin':
+            return redirect(url_for('school_admin_dashboard'))
+        elif current_user.role == 'teacher':
+            return redirect(url_for('teacher_dashboard'))
+        else:
+            return redirect(url_for('dashboard'))
+    return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -160,28 +207,6 @@ def logout():
 @login_required
 def dashboard():
     return render_template('dashboard.html', user=current_user)
-
-# ============ DATABASE INITIALIZATION ============
-
-@app.route('/init-db', methods=['POST'])
-def init_db():
-    """Initialize database with tables and create super admin"""
-    db.create_all()
-    
-    # Create super admin if doesn't exist
-    if not User.query.filter_by(role='super_admin').first():
-        super_admin = User(
-            username='superadmin',
-            email='admin@school.com',
-            role='super_admin',
-            is_active=True
-        )
-        super_admin.set_password('admin123')
-        db.session.add(super_admin)
-        db.session.commit()
-        return jsonify({'message': 'Database initialized and super admin created'}), 201
-    
-    return jsonify({'message': 'Database already initialized'}), 200
 
 # ============ SUPER ADMIN ROUTES ============
 
@@ -1359,20 +1384,6 @@ def teacher_summary_report():
     }
     
     return render_template('teacher_summary_report.html', summary=summary)
-
-# ============ ROLE-BASED ACCESS CONTROL DECORATOR ============
-
-from functools import wraps
-
-def role_required(role):
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            if not current_user.is_authenticated or current_user.role != role:
-                return redirect(url_for('login'))
-            return f(*args, **kwargs)
-        return decorated_function
-    return decorator
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -9,63 +9,93 @@
 </head>
 <body>
     <div class="dashboard-container">
+        <!-- Enhanced sidebar with tactical command center styling -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="school-name">
-                    <i class="fas fa-shield-alt"></i> NEXUS
+                <div class="system-status">
+                    <div class="status-indicator"></div>
+                    <span class="status-text">SYSTEM ONLINE</span>
                 </div>
+                <div class="school-name">
+                    <i class="fas fa-shield-alt"></i> NEXUS v2.1.7
+                </div>
+                <div class="classification">CLASSIFIED</div>
             </div>
             
             <nav class="sidebar-nav">
                 {% if current_user.role == 'super_admin' %}
-                    <a href="{{ url_for('super_admin_dashboard') }}" class="nav-item">
-                        <i class="fas fa-chart-line icon"></i> Dashboard
+                    <a href="{{ url_for('super_admin_dashboard') }}" class="nav-item {% if request.endpoint == 'super_admin_dashboard' %}active{% endif %}">
+                        <i class="fas fa-chart-line icon"></i>
+                        <span>COMMAND CENTER</span>
                     </a>
-                    <a href="{{ url_for('manage_schools') }}" class="nav-item">
-                        <i class="fas fa-school icon"></i> Schools
+                    <a href="{{ url_for('manage_schools') }}" class="nav-item {% if request.endpoint == 'manage_schools' %}active{% endif %}">
+                        <i class="fas fa-school icon"></i>
+                        <span>SCHOOL NETWORK</span>
                     </a>
-                    <a href="{{ url_for('manage_admins') }}" class="nav-item">
-                        <i class="fas fa-users-cog icon"></i> Admins
+                    <a href="{{ url_for('manage_admins') }}" class="nav-item {% if request.endpoint == 'manage_admins' %}active{% endif %}">
+                        <i class="fas fa-users-cog icon"></i>
+                        <span>ADMIN CONTROL</span>
                     </a>
                 {% elif current_user.role == 'school_admin' %}
-                    <a href="{{ url_for('school_admin_dashboard') }}" class="nav-item">
-                        <i class="fas fa-chart-line icon"></i> Dashboard
+                    <a href="{{ url_for('school_admin_dashboard') }}" class="nav-item {% if request.endpoint == 'school_admin_dashboard' %}active{% endif %}">
+                        <i class="fas fa-chart-line icon"></i>
+                        <span>OPERATIONS</span>
                     </a>
-                    <a href="{{ url_for('manage_students') }}" class="nav-item">
-                        <i class="fas fa-user-graduate icon"></i> Students
+                    <a href="{{ url_for('manage_students') }}" class="nav-item {% if request.endpoint == 'manage_students' %}active{% endif %}">
+                        <i class="fas fa-user-graduate icon"></i>
+                        <span>STUDENT ROSTER</span>
                     </a>
-                    <a href="{{ url_for('manage_teachers') }}" class="nav-item">
-                        <i class="fas fa-chalkboard-user icon"></i> Teachers
+                    <a href="{{ url_for('manage_teachers') }}" class="nav-item {% if request.endpoint == 'manage_teachers' %}active{% endif %}">
+                        <i class="fas fa-chalkboard-user icon"></i>
+                        <span>FACULTY UNIT</span>
                     </a>
-                    <a href="{{ url_for('manage_attendance') }}" class="nav-item">
-                        <i class="fas fa-clipboard-check icon"></i> Attendance
+                    <a href="{{ url_for('manage_attendance') }}" class="nav-item {% if request.endpoint == 'manage_attendance' %}active{% endif %}">
+                        <i class="fas fa-clipboard-check icon"></i>
+                        <span>ATTENDANCE LOG</span>
                     </a>
-                    <a href="{{ url_for('manage_fees') }}" class="nav-item">
-                        <i class="fas fa-money-bill icon"></i> Fees
+                    <a href="{{ url_for('manage_fees') }}" class="nav-item {% if request.endpoint == 'manage_fees' %}active{% endif %}">
+                        <i class="fas fa-money-bill icon"></i>
+                        <span>FINANCIAL SYSTEM</span>
                     </a>
-                    <a href="{{ url_for('school_admin_settings') }}" class="nav-item">
-                        <i class="fas fa-cog icon"></i> Settings
+                    <a href="{{ url_for('school_admin_settings') }}" class="nav-item {% if request.endpoint == 'school_admin_settings' %}active{% endif %}">
+                        <i class="fas fa-cog icon"></i>
+                        <span>CONFIGURATION</span>
                     </a>
                 {% elif current_user.role == 'teacher' %}
-                    <a href="{{ url_for('teacher_dashboard') }}" class="nav-item">
-                        <i class="fas fa-chart-line icon"></i> Dashboard
+                    <a href="{{ url_for('teacher_dashboard') }}" class="nav-item {% if request.endpoint == 'teacher_dashboard' %}active{% endif %}">
+                        <i class="fas fa-chart-line icon"></i>
+                        <span>TEACHING CENTER</span>
                     </a>
-                    <a href="{{ url_for('manage_assignments') }}" class="nav-item">
-                        <i class="fas fa-tasks icon"></i> Assignments
+                    <a href="{{ url_for('manage_assignments') }}" class="nav-item {% if request.endpoint == 'manage_assignments' %}active{% endif %}">
+                        <i class="fas fa-tasks icon"></i>
+                        <span>ASSIGNMENTS</span>
                     </a>
-                    <a href="{{ url_for('class_performance_report') }}" class="nav-item">
-                        <i class="fas fa-chart-bar icon"></i> Performance
+                    <a href="{{ url_for('class_performance_report') }}" class="nav-item {% if request.endpoint == 'class_performance_report' %}active{% endif %}">
+                        <i class="fas fa-chart-bar icon"></i>
+                        <span>PERFORMANCE</span>
                     </a>
-                    <a href="{{ url_for('teacher_attendance_report') }}" class="nav-item">
-                        <i class="fas fa-clipboard-check icon"></i> Attendance
+                    <a href="{{ url_for('teacher_attendance_report') }}" class="nav-item {% if request.endpoint == 'teacher_attendance_report' %}active{% endif %}">
+                        <i class="fas fa-clipboard-check icon"></i>
+                        <span>ATTENDANCE</span>
                     </a>
-                    <a href="{{ url_for('teacher_summary_report') }}" class="nav-item">
-                        <i class="fas fa-file-alt icon"></i> Reports
+                    <a href="{{ url_for('teacher_summary_report') }}" class="nav-item {% if request.endpoint == 'teacher_summary_report' %}active{% endif %}">
+                        <i class="fas fa-file-alt icon"></i>
+                        <span>REPORTS</span>
                     </a>
                 {% endif %}
             </nav>
             
             <div class="sidebar-footer">
+                <div class="system-info">
+                    <div class="info-item">
+                        <span class="label">UPTIME:</span>
+                        <span class="value">99.9%</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">AGENTS:</span>
+                        <span class="value">847</span>
+                    </div>
+                </div>
                 <a href="{{ url_for('logout') }}" class="btn-logout">
                     <i class="fas fa-sign-out-alt"></i> LOGOUT
                 </a>
@@ -73,14 +103,20 @@
         </aside>
         
         <main class="main-content">
+            <!-- Enhanced header with tactical styling and system info -->
             <header class="top-header">
                 <div class="header-left">
-                    <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+                    <h1>{% block page_title %}DASHBOARD{% endblock %}</h1>
+                    <div class="header-subtitle">LAST UPDATE: {{ now.strftime('%d/%m/%Y %H:%M UTC') }}</div>
                 </div>
                 <div class="header-right">
+                    <div class="system-alerts">
+                        <i class="fas fa-bell"></i>
+                        <span class="alert-badge">3</span>
+                    </div>
                     <div class="user-info">
                         <strong>{{ current_user.username }}</strong><br>
-                        <small>{{ current_user.role.replace('_', ' ').title() }}</small>
+                        <small>{{ current_user.role.replace('_', ' ').upper() }}</small>
                     </div>
                 </div>
             </header>

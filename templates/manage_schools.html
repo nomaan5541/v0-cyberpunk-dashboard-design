@@ -3,60 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Schools</title>
+    <title>SCHOOL NETWORK MANAGEMENT</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-        }
-        
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        
-        .form-section {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
-        }
-        
-        .form-section h2 {
-            color: #333;
+        .command-section {
+            background: rgba(0, 255, 200, 0.05);
+            border: 2px solid #00ffc8;
+            border-radius: 0;
+            padding: 20px;
             margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 200, 0.2);
+        }
+        
+        .command-section h2 {
+            color: #00ffc8;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: 15px;
+            margin-bottom: 15px;
         }
         
         .form-group {
@@ -65,43 +37,55 @@
         }
         
         label {
+            color: #00ffc8;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
             margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         input {
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ffc8;
+            color: #00ffc8;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
         }
         
         input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #ff6600;
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
         }
         
-        .btn {
+        .btn-submit {
+            background: #ff6600;
+            border: 2px solid #ff6600;
+            color: #000;
             padding: 12px 24px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
             cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            letter-spacing: 1px;
         }
         
-        .btn:hover {
-            background: #5568d3;
+        .btn-submit:hover {
+            background: transparent;
+            color: #ff6600;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.8);
         }
         
-        .schools-table {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        .data-table {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #00ffc8;
+            border-radius: 0;
             overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 200, 0.2);
         }
         
         table {
@@ -110,87 +94,102 @@
         }
         
         th {
-            background: #f9f9f9;
+            background: rgba(0, 255, 200, 0.1);
+            border-bottom: 2px solid #00ffc8;
+            color: #00ffc8;
             padding: 15px;
             text-align: left;
-            color: #333;
-            font-weight: 600;
-            border-bottom: 2px solid #ddd;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         td {
-            padding: 15px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid rgba(0, 255, 200, 0.2);
+            color: #00ffc8;
+            padding: 12px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
         }
         
         tr:hover {
-            background: #f9f9f9;
+            background: rgba(0, 255, 200, 0.05);
         }
         
         .status-active {
-            color: #27ae60;
-            font-weight: 600;
+            color: #00ff00;
+            font-weight: bold;
         }
         
         .status-inactive {
-            color: #e74c3c;
-            font-weight: 600;
+            color: #ff0000;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <h1>Manage Schools</h1>
-        <a href="{{ url_for('super_admin_dashboard') }}">Back to Dashboard</a>
+    <div class="tactical-header">
+        <div class="header-left">
+            <div class="system-title">TACTICAL OPS</div>
+            <div class="system-version">v2.1.7 CLASSIFIED</div>
+        </div>
+        <div class="header-center">
+            <div class="command-title">SCHOOL NETWORK MANAGEMENT</div>
+        </div>
+        <div class="header-right">
+            <div class="timestamp" id="timestamp"></div>
+            <a href="{{ url_for('super_admin_dashboard') }}" class="nav-link">← RETURN TO COMMAND</a>
+        </div>
     </div>
     
-    <div class="container">
-        <div class="form-section">
-            <h2>Create New School</h2>
+    <div class="tactical-container">
+        <div class="command-section">
+            <h2>⚡ INITIALIZE NEW SCHOOL UNIT</h2>
             <form id="schoolForm">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="name">School Name *</label>
+                        <label for="name">SCHOOL DESIGNATION *</label>
                         <input type="text" id="name" name="name" required>
                     </div>
                     <div class="form-group">
-                        <label for="address">Address</label>
+                        <label for="address">LOCATION COORDINATES</label>
                         <input type="text" id="address" name="address">
                     </div>
                     <div class="form-group">
-                        <label for="phone">Phone</label>
+                        <label for="phone">COMMUNICATION CHANNEL</label>
                         <input type="tel" id="phone" name="phone">
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
+                        <label for="email">SIGNAL ENDPOINT</label>
                         <input type="email" id="email" name="email">
                     </div>
                     <div class="form-group">
-                        <label for="admin_username">Admin Username *</label>
+                        <label for="admin_username">ADMIN OPERATIVE ID *</label>
                         <input type="text" id="admin_username" name="admin_username" required>
                     </div>
                     <div class="form-group">
-                        <label for="admin_email">Admin Email *</label>
+                        <label for="admin_email">ADMIN SIGNAL *</label>
                         <input type="email" id="admin_email" name="admin_email" required>
                     </div>
                     <div class="form-group">
-                        <label for="admin_password">Admin Password *</label>
+                        <label for="admin_password">SECURITY CLEARANCE *</label>
                         <input type="password" id="admin_password" name="admin_password" required>
                     </div>
                 </div>
-                <button type="submit" class="btn">Create School</button>
+                <button type="submit" class="btn-submit">DEPLOY SCHOOL UNIT</button>
             </form>
         </div>
         
-        <div class="schools-table">
+        <div class="data-table">
             <table>
                 <thead>
                     <tr>
-                        <th>School Name</th>
-                        <th>Address</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Status</th>
+                        <th>SCHOOL DESIGNATION</th>
+                        <th>LOCATION</th>
+                        <th>SIGNAL ENDPOINT</th>
+                        <th>COMMUNICATION</th>
+                        <th>UNIT STATUS</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -202,7 +201,7 @@
                         <td>{{ school.phone or 'N/A' }}</td>
                         <td>
                             <span class="{% if school.is_active %}status-active{% else %}status-inactive{% endif %}">
-                                {% if school.is_active %}Active{% else %}Inactive{% endif %}
+                                {% if school.is_active %}● ACTIVE{% else %}● INACTIVE{% endif %}
                             </span>
                         </td>
                     </tr>
@@ -213,6 +212,20 @@
     </div>
     
     <script>
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('timestamp').textContent = now.toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }).toUpperCase();
+        }
+        updateTimestamp();
+        setInterval(updateTimestamp, 1000);
+        
         document.getElementById('schoolForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
@@ -225,13 +238,13 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    alert(data.message);
+                    alert('✓ SCHOOL UNIT DEPLOYED SUCCESSFULLY');
                     location.reload();
                 } else {
-                    alert('Error: ' + data.error);
+                    alert('✗ DEPLOYMENT FAILED: ' + data.error);
                 }
             } catch (error) {
-                alert('Error creating school: ' + error.message);
+                alert('✗ SYSTEM ERROR: ' + error.message);
             }
         });
     </script>
